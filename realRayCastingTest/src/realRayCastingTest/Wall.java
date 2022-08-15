@@ -2,6 +2,7 @@ package realRayCastingTest;
 
 import java.awt.Color;
 import java.awt.geom.Line2D;
+import java.util.ArrayList;
 
 public class Wall {
 
@@ -9,6 +10,13 @@ public class Wall {
 	double startX, startY, x, y, w, h, startAngle, angleX, angleY;
 	Color[] colors = new Color[4];
 	Line2D[] lines = new Line2D[4];
+	
+	@SuppressWarnings("rawtypes")
+	ArrayList<ArrayList> intersectionList = new ArrayList<>();
+	ArrayList<Ray> topIntersections = new ArrayList<Ray>();
+	ArrayList<Ray> leftIntersections = new ArrayList<Ray>();
+	ArrayList<Ray> rightIntersections = new ArrayList<Ray>();
+	ArrayList<Ray> bottomIntersections = new ArrayList<Ray>();
 	boolean[] intersected = new boolean[4];
 	Line2D topLine;
 	Line2D leftLine;
@@ -38,23 +46,55 @@ public class Wall {
 		lines[1] = leftLine;
 		lines[2] = rightLine;
 		lines[3] = bottomLine;
+		intersectionList.add(topIntersections);
+		intersectionList.add(leftIntersections);
+		intersectionList.add(rightIntersections);
+		intersectionList.add(bottomIntersections);
 		colors[0] = Color.black;
 		colors[1] = Color.blue;
 		colors[2] = Color.green;
 		colors[3] = Color.red;
 	}
 
-	public void highlightIntersection(Line2D line) {
+	public void checkIntersections(Ray ray, Line2D line) {
 		
 		for (int i = 0; i < lines.length; i++) {
 			if (lines[i] == line) {
-				intersected[i] = true;
+				switch(i) {
+					case 0:
+						topIntersections.add(ray);
+						break;
+					case 1:
+						leftIntersections.add(ray);
+						break;
+					case 2:
+						rightIntersections.add(ray);
+						break;
+					case 3:
+						bottomIntersections.add(ray);
+						break;
+				}
+				
+				highlightIntersection(line);
+			}
+		}
+	}
+	
+	public void highlightIntersection(Line2D line) {
+		
+		for (int i = 0; i < lines.length; i++) {
+			if (intersectionList.get(i).size() > 25) {
+				
+				if (lines[i] == line) {
+					intersected[i] = true;
+				}
 			}
 		}
 	}
 	
 	public void unHighlight() {
 		for (int i = 0; i < intersected.length; i++) {
+			intersectionList.get(i).clear();
 			intersected[i] = false;
 		}
 	}
@@ -66,21 +106,11 @@ public class Wall {
 		x = startX - level.x;
 		y = startY - level.y;
 		
-		if (startX < 0 && startY < 0 & startAngle > 0) {
-			x = Math.abs(x);
-			y = Math.abs(y);
-			
-			topLine.setLine(-x, -y+1,                               -x + w, -y + (h+1) * angleY);
-			leftLine.setLine(-x, -y,                              -x - w * angleX, -y + h * angleY);
-			rightLine.setLine(-x + w, -y + h * angleY,            -x + w / 2 * angleX, -y + h * 2 * angleY);
-			bottomLine.setLine(-x - w * angleX, -y + (h+1) * angleY,  -x + w / 2 * angleX, -y + (h+1) * 2 * angleY);
-		}
-		
 		if (startAngle > 0) {
-			topLine.setLine(x, y+1,                               x + w, y + (h+1) * angleY);
-			leftLine.setLine(x, y,                              x - w * angleX, y + h * angleY);
-			rightLine.setLine(x + w, y + h * angleY,            x + w / 2 * angleX, y + h * 2 * angleY);
-			bottomLine.setLine(x - w * angleX, y + (h+1) * angleY,  x + w / 2 * angleX, y + (h+1) * 2 * angleY);
+			topLine.setLine(x, y+1,                                x + w, y + (h+1) * angleY);
+			leftLine.setLine(x, y,                                 x - w * angleX, y + h * angleY);
+			rightLine.setLine(x + w, y + h * angleY,               x + w / 2 * angleX, y + h * 2 * angleY);
+			bottomLine.setLine(x - w * angleX, y + (h+1) * angleY, x + w / 2 * angleX, y + (h+1) * 2 * angleY);
 		} else {
 			topLine.setLine(x, y + 1, x + w, y + 1);
 			leftLine.setLine(x, y, x, y + h);

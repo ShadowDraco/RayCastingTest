@@ -28,6 +28,7 @@ public class Ray {
 		}
 	}
 	
+	// After finding an intersection set an end point to that point
 	public void setNewEndPoint(Line2D wallLine, Wall wall) {
 		double x1 = wallLine.getX1();
 		double x2 = wallLine.getX2();
@@ -49,12 +50,12 @@ public class Ray {
 		double u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
 		
 		if (t > 0 && t < 1 && u > 0) {
-			double ptx = x1 + t * (x2 - x1);
-			double pty = y1 + t * (y2 - y1);
-			
-			line.setLine(player.cx, player.cy, ptx, pty);
+			// set the new end point for the line
+			intersection = new Point2D.Double(x1 + t * (x2 - x1), y1 + t * (y2 - y1));
+			line.setLine(player.cx, player.cy, intersection.getX(), intersection.getY());
 			foundIntersection = true;
-			wall.highlightIntersection(wallLine);
+			// AFTER setting the new point, ask the wall how many lines are intersecting it
+			wall.checkIntersections(this, wallLine);
 		}
 		
 	}

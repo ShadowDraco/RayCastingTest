@@ -91,10 +91,10 @@ public class Camera {
 		}
 		if (idleTimer > 60) {
 			if (player.cy > window.getHeight()) {
-				this.velY -= speedCap;
+				this.velY += speedCap;
 			} 
 			if (player.cy < 0) {
-				this.velY += speedCap;
+				this.velY -= speedCap;
 			}
 				
 			playerIsIdle = true;

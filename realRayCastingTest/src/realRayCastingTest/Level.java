@@ -31,7 +31,7 @@ public class Level {
 		walls[1] = new Wall(100, 300, 100, 90, 45, this);
 		walls[2] = new Wall(400, 500, 100, 90, 10, this);
 		walls[3] = new Wall(600, 300, 100, 90, 130, this);
-		walls[4] = new Wall(-50, -50, 100, 90, 45, this);
+		walls[4] = new Wall(50, 50, 100, 90, 45, this);
 	}
 
 	public void startRotate(KeyEvent e) {

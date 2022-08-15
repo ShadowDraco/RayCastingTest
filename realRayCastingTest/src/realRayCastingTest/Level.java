@@ -1,6 +1,7 @@
 package realRayCastingTest;
 
 import java.awt.event.KeyEvent;
+import java.util.Random;
 
 public class Level {
 
@@ -12,16 +13,17 @@ public class Level {
 	boolean rotatingLeft, rotatingRight;
 
 	Ray[] rays = new Ray[360];
-	Wall[] walls = new Wall[5];
+	Wall[] walls = new Wall[20];
 
 	CollisionHandler collisions;
 	Camera camera;
+	Random rand = new Random();
 
 	public Level(GraphicsHandler graphics) {
 		
 		this.window = graphics.window;
 		
-		player = new Player(100, 100);
+		player = new Player(200, 100);
 		playerKeys = new KeyHandler(this);
 
 		collisions = new CollisionHandler(this);
@@ -32,6 +34,9 @@ public class Level {
 		walls[2] = new Wall(400, 500, 100, 90, 10, this);
 		walls[3] = new Wall(600, 300, 100, 90, 130, this);
 		walls[4] = new Wall(50, 50, 100, 90, 45, this);
+		for (int i = 5; i < 20; i++) {
+			walls[i] = new Wall(rand.nextDouble(2000) + 200, rand.nextDouble(1000), rand.nextDouble(200) + 30, rand.nextDouble(200) + 30, rand.nextDouble(270), this);
+		}
 	}
 
 	public void startRotate(KeyEvent e) {

@@ -5,9 +5,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.Shape;
+
 import java.awt.geom.AffineTransform;
-import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
@@ -40,20 +39,10 @@ public class GraphicsHandler extends JPanel {
 				if (wall.intersected[j] == true) {
 					g2.setColor(Color.LIGHT_GRAY);
 					g2.draw(wall.lines[j]);
-
-					AlphaComposite overlap = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
-					AlphaComposite original = AlphaComposite.getInstance(AlphaComposite.SRC_IN);
-					ArrayList rayList =  wall.intersectionList.get(j);
-					
-					for (int r = 0; r < wall.intersectionList.get(j).size(); i++) {
-						Line2D rayLine = rayList.get(r).line;
-						g2.setComposite(overlap);
-						g2.draw();
-						g2.setComposite(original);
-					}
+					drawIntersectionRays(g2, old, j, wall);
 				}
-				// g2.draw(wall.lines[j]);
 			}
+			// g2.draw(wall.lines[j]);
 		}
 	}
 
@@ -73,6 +62,33 @@ public class GraphicsHandler extends JPanel {
 		}
 		g2.setTransform(old);
 	}
+	
+	public void drawIntersectionRays(Graphics2D g2, AffineTransform old, int j, Wall wall) {
+		AlphaComposite overlap = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
+		AlphaComposite original = AlphaComposite.getInstance(AlphaComposite.SRC_IN);
+		g2.setComposite(overlap);
+		if (j == 0) {
+			for (Ray ray : wall.topIntersections) {
+				g2.draw(ray.line);
+			}
+		}
+		if (j == 1) {
+			for (Ray ray : wall.leftIntersections) {
+				g2.draw(ray.line);
+			}
+		}
+		if (j == 3) {
+			for (Ray ray : wall.rightIntersections) {
+				g2.draw(ray.line);
+			}
+		}
+		if (j == 3) {
+			for (Ray ray : wall.bottomIntersections) {
+				g2.draw(ray.line);
+			}
+		}
+		g2.setComposite(original);
+	}
 
 	public void paintComponent(Graphics g) {
 		if (level != null) {
@@ -84,8 +100,8 @@ public class GraphicsHandler extends JPanel {
 			AffineTransform old = new AffineTransform(g2.getTransform());
 
 			g2.fillRect(-1, -1, level.window.getWidth(), level.window.getHeight());
-			// drawRays(g2, old);
-			//drawWalls(g2, old);
+			//drawRays(g2, old);
+			drawWalls(g2, old);
 			drawPlayer(g2, old);
 		}
 

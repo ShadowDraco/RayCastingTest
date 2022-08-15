@@ -11,12 +11,10 @@ public class Wall {
 	Color[] colors = new Color[4];
 	Line2D[] lines = new Line2D[4];
 	
-	@SuppressWarnings("rawtypes")
-	ArrayList<ArrayList> intersectionList = new ArrayList<>();
-	ArrayList<Ray> topIntersections = new ArrayList<Ray>();
-	ArrayList<Ray> leftIntersections = new ArrayList<Ray>();
-	ArrayList<Ray> rightIntersections = new ArrayList<Ray>();
-	ArrayList<Ray> bottomIntersections = new ArrayList<Ray>();
+	ArrayList<Ray> topIntersections = new ArrayList<>();
+	ArrayList<Ray> leftIntersections = new ArrayList<>();
+	ArrayList<Ray> rightIntersections = new ArrayList<>();
+	ArrayList<Ray> bottomIntersections = new ArrayList<>();
 	boolean[] intersected = new boolean[4];
 	Line2D topLine;
 	Line2D leftLine;
@@ -46,10 +44,7 @@ public class Wall {
 		lines[1] = leftLine;
 		lines[2] = rightLine;
 		lines[3] = bottomLine;
-		intersectionList.add(topIntersections);
-		intersectionList.add(leftIntersections);
-		intersectionList.add(rightIntersections);
-		intersectionList.add(bottomIntersections);
+
 		colors[0] = Color.black;
 		colors[1] = Color.blue;
 		colors[2] = Color.green;
@@ -82,19 +77,26 @@ public class Wall {
 	
 	public void highlightIntersection(Line2D line) {
 		
-		for (int i = 0; i < lines.length; i++) {
-			if (intersectionList.get(i).size() > 25) {
-				
-				if (lines[i] == line) {
-					intersected[i] = true;
-				}
-			}
+		if (topIntersections.size() > 30) {
+			intersected[0] = true;
+		}
+		if (leftIntersections.size() > 30) {
+			intersected[1] = true;
+		}
+		if (rightIntersections.size() > 30) {
+			intersected[2] = true;
+		}
+		if (bottomIntersections.size() > 30) {
+			intersected[3] = true;
 		}
 	}
 	
 	public void unHighlight() {
+		topIntersections.clear();
+		leftIntersections.clear();
+		rightIntersections.clear();
+		bottomIntersections.clear();
 		for (int i = 0; i < intersected.length; i++) {
-			intersectionList.get(i).clear();
 			intersected[i] = false;
 		}
 	}
@@ -107,15 +109,15 @@ public class Wall {
 		y = startY - level.y;
 		
 		if (startAngle > 0) {
-			topLine.setLine(x, y+1,                                x + w, y + (h+1) * angleY);
+			topLine.setLine(x, y,                                x + w, y + (h) * angleY);
 			leftLine.setLine(x, y,                                 x - w * angleX, y + h * angleY);
 			rightLine.setLine(x + w, y + h * angleY,               x + w / 2 * angleX, y + h * 2 * angleY);
-			bottomLine.setLine(x - w * angleX, y + (h+1) * angleY, x + w / 2 * angleX, y + (h+1) * 2 * angleY);
+			bottomLine.setLine(x - w * angleX, y + (h+1) * angleY, x + w / 2 * angleX, y + (h) * 2 * angleY);
 		} else {
-			topLine.setLine(x, y + 1, x + w, y + 1);
+			topLine.setLine(x, y, x + w, y);
 			leftLine.setLine(x, y, x, y + h);
 			rightLine.setLine(x + w, y, x + w, y + h);
-			bottomLine.setLine(x, (y + h - 1), x + w, y + h - 1);
+			bottomLine.setLine(x, (y + h), x + w, y + h);
 		}
 
 	}
